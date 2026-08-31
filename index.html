@@ -26,8 +26,14 @@
   }
   article {
     margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #c0c0c0;
+  }
+  article::after {
+    content: "";
+    display: block;
+    width: 1em;
+    height: 1px;
+    background: #c0c0c0;
+    margin-top: 2rem;
   }
   article time {
     display: block;
