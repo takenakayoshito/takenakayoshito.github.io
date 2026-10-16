@@ -17,7 +17,7 @@
     line-height: 2.0;
   }
   header {
-    margin-bottom: 6rem;
+    margin-bottom: 6rem;          /* リード → 帯の上端：6rem の白 */
   }
   h1 {
     font-size: 1.5rem;
@@ -45,6 +45,22 @@
   article a {
     color: #202020;
     text-decoration-color: #80ff00;
+  }
+  main {
+    display: block;
+    position: relative;
+    padding-top: 6rem;            /* 帯の上端 → 最初の投稿：6rem */
+  }
+  main::before {                  /* 全幅のグラデーション帯 */
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;                 /* 画面いっぱいの幅 */
+    height: 200px;                /* 帯の高さ（フェードの長さ）*/
+    background: linear-gradient(180deg, #f8f8f8 0%, #ffffff 100%);
+    z-index: -1;                  /* 文字の背後 */
   }
 </style>
 </head>
