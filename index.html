@@ -53,183 +53,43 @@
     <p>2019.06.19からの社内共有メモを、こっちにまとめていく。</p>
   </header>
 
- <main>
-  
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
+ <main id="feed"></main>
 
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
+<script>
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
+  // memo.txt 内の [表示テキスト](URL) を a タグに変換（1件に複数でも可）
+  function links(s){
+    return s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+      (m, t, u) => '<a href="' + u + '" target="_blank" rel="noopener">' + t + '</a>');
+  }
 
-  <article>
-    <time datetime="2019-07-31">2019.07.31</time>
-    <p><a href="https://brand.denso.com/ja/" target="_blank" rel="noopener">デンソー ブランドサイト</a>と、<a href="http://www.hisense.cn/" target="_blank" rel="noopener">ハイセンス グローバルサイト</a></p>
-  </article>
- 
-  <article>
-    <time datetime="2019-07-30">2019.07.30</time>
-    <p>前回（2014年）消費税が5%→8%に増税した際では、景況感は下がったようです。</p>
-  </article>
+  function toDatetime(d){ return d.replace(/\./g, "-"); }
 
-  <article>
-    <time datetime="2019-07-29">2019.07.29</time>
-    <p>食べる通信｜髙橋さん</p>
-  </article>
+  function render(blocks){
+    const feed = document.getElementById("feed");
+    feed.innerHTML = blocks.map(b => {
+      const lines = b.split("\n").map(l => l.trim()).filter(Boolean);
+      if(!lines.length) return "";
+      const date = lines[0].replace(/^MEMO[：:]\s*/, "");
+      const body = lines.slice(1).map(ln => {
+        const html = links(esc(ln));
+        return ln.charAt(0) === "※"
+          ? '<span class="note">' + html + '</span>'
+          : '<p>' + html + '</p>';
+      }).join("\n");
+      return '<article><time datetime="' + esc(toDatetime(date)) + '">' + esc(date) + '</time>'
+             + body + '</article>';
+    }).join("\n");
+  }
 
-  <article>
-    <time datetime="2019-07-26">2019.07.26</time>
-    <p>続報：これか？と思ったらこれだった</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-25">2019.07.25</time>
-    <p>海苔「一日二枚で医者いらず」</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-24">2019.07.24</time>
-    <p>今日初めて「カーネルパニック」を食らう</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-23">2019.07.23</time>
-    <p>ずっと、モデュロール</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-22">2019.07.22</time>
-    <p>フィッシャーマンコール</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-19">2019.07.19</time>
-    <p>次は「仮面ライダーゼロワン」という商標らしい</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-18">2019.07.18</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-17">2019.07.17</time>
-    <p>生活定点</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-16">2019.07.16</time>
-    <p>
-    HD：1440×1080px<br>
-    フルHD：1920×1080px<br>
-    4K：3840×2160px
-    </p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-12">2019.07.12</time>
-    <p>トイレットペーパーブラスター</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-11">2019.07.11</time>
-    <p>ダンボールコマンダー</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-10">2019.07.10</time>
-    <p>なるほど「SDGsウォッシュ」という言葉</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-09">2019.07.09</time>
-    <p>ボトルキャップチャレンジ</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-08">2019.07.08</time>
-    <p>ドクターマリオ ワールド配信</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-05">2019.07.05</time>
-    <p>スウェーデン「Karma」の似たやつ：Reduce GO</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-04">2019.07.04</time>
-    <p>シンギュラリティ…</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-03">2019.07.03</time>
-    <p>backlogをお勧めしておく</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-02">2019.07.02</time>
-    <p>色の校正：Photoshopによる1型色覚（P型）と、2型色覚（D型）擬似変換</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-01">2019.07.01</time>
-    <p><a href="https://www.kyodo.co.jp/publish/%e8%a8%98%e8%80%85%e3%83%8f%e3%83%b3%e3%83%89%e3%83%96%e3%83%83%e3%82%af%e3%80%80%e7%ac%ac%ef%bc%91%ef%bc%93%e7%89%88/" target="_blank" rel="noopener">記者ハンドブック（共同通信社）</a></p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>商材・サービスによっては、Google検索よりもSNS検索（Twitter・Instagram）のが考慮すべき場合がありますー</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-27">2019.06.27</time>
-    <p>今度使う、Google Webフォント「<a href="https://fonts.google.com/noto/specimen/Noto+Sans+JP" target="_blank" rel="noopener">Noto Sans JP</a>」</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-26">2019.06.26</time>
-    <p>今日時点でのターゲットブラウザ（9つ）</p>
-    <p>iOS Safari, Android Chrome, iOS Chrome, PC Chrome, PC Flrefox, PC Edge, Mac Chrome, Mac Safari, Mac Flrefox</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-25">2019.06.25</time>
-    <p>注意：SSL化されていないサイトは「<a href="https://ssl.sakura.ad.jp/column/https-not-valid/" target="_blank" rel="noopener">保護されていない通信</a>」と警告されます！</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-24">2019.06.24</time>
-    <p>高齢化世界1位の日本で、サンデーさん出店エリアでは高齢化率30%を超えている</p>
-    <span class="note">※世界からは、日本の高齢化対策（一番手として）が注目される</span>
-  </article>
-
-  <article>
-    <time datetime="2019-06-21">2019.06.21</time>
-    <p>あこれライゾマさん案件でした...</p>
-    <p><a href="https://www.ntticc.or.jp/ja/archive/works/nike-music-shoe/" target="_blank" rel="noopener">Nike Music Shoe</a></p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-20">2019.06.20</time>
-    <p>5GのiPhoneは2020年秋発売</p>
-    <p><a href="http://ar-bito.com/2019/06/03/world-mr-news-5gxxr/" target="_blank" rel="noopener">5GとVR</a></p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-19">2019.06.19</time>
-    <p>iPhoneとAndroid国内シェアは（最近では）Androidの方が上らしい</p>
-    <span class="note">※10-20歳代では未だIPhoneのが上</span>
-  </article>
-
- </main>
-
+  fetch("memo.txt", {cache:"no-cache"})
+    .then(r => { if(!r.ok) throw new Error(); return r.text(); })
+    .then(t => render(t.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean)))
+    .catch(() => {
+      document.getElementById("feed").innerHTML =
+        "<p>一覧を読み込めませんでした。公開URL（GitHub Pages）では表示されます。</p>";
+    });
+</script>
 </body>
 </html>
