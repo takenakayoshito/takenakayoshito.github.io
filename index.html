@@ -1,235 +1,163 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>takenakayoshito</title>
+<meta name="description" content="2019.06.19からの社内共有メモを、こっちにまとめていく。">
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: -apple-system, "Hiragino Sans", sans-serif;
-    max-width: 20em;
-    margin: 6rem auto;
-    color: #202020;
-    line-height: 2.0;
-  }
-  header {
-    margin-bottom: 6rem;
-  }
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-  }
-  article {
-    margin-bottom: 4rem;
-  }
-  article::after {
-    content: "";
-    display: block;
-    width: 0.5em;
-    height: 1px;
-    background: #c0c0c0;
-    margin-top: 4rem;
-  }
-  article time {
-    display: block;
-    color: #202020;
-  }
-  article .note {
-    color: #202020;
-  }
-  article a {
-    color: #202020;
-  }
+:root{
+  --bg:#ffffff;
+  --ink:#202020;        /* 近黒（ハーフスケール寄りの濃グレー） */
+  --ink-weak:#808080;   /* 日付など */
+  --ink-faint:#b8b8b8;
+  --band:#e7e8ea;       /* グラデーション帯の中間色 */
+  --line:#ededed;
+
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Yu Gothic UI",Meiryo,sans-serif;
+  --pad:clamp(20px,6vw,40px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;line-height:1.7;
+  font-feature-settings:"palt" 1;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+
+.wrap{max-width:640px;margin:0 auto;padding:0 var(--pad)}
+
+/* ── ヘッダ ─────────────────────── */
+header{padding:clamp(40px,10vw,88px) 0 0}
+h1{
+  margin:0;font-size:clamp(26px,6vw,34px);font-weight:600;
+  letter-spacing:-.01em;
+}
+.lede{
+  margin:1em 0 0;max-width:22em;
+  color:var(--ink-weak);font-size:15px;line-height:1.85;
+}
+
+/* ── グラデーションの区切り ─────────── */
+.rule{
+  height:clamp(64px,12vw,96px);
+  margin:clamp(28px,6vw,48px) 0 0;
+  background:linear-gradient(to bottom,var(--bg) 0%,var(--band) 52%,var(--bg) 100%);
+}
+
+/* ── フィード ───────────────────── */
+main{padding:0 0 120px}
+.entry{padding:clamp(18px,4vw,26px) 0}
+.entry + .entry{border-top:1px solid var(--line)}
+.date{
+  font-size:13px;color:var(--ink-weak);
+  font-variant-numeric:tabular-nums;letter-spacing:.02em;
+  margin-bottom:5px;
+}
+.text{margin:0;font-size:17px;line-height:1.75;word-break:break-word}
+.text a{
+  color:var(--ink);
+  text-decoration:underline;
+  text-decoration-color:var(--ink-faint);
+  text-underline-offset:3px;
+  text-decoration-thickness:1px;
+}
+.text a:hover{text-decoration-color:var(--ink)}
+
+.status{padding:40px 0 120px;color:var(--ink-weak);font-size:14px;line-height:1.9}
+.status code{background:#f2f2f2;padding:1px 5px;border-radius:3px;font-size:13px}
+
+footer{
+  border-top:1px solid var(--line);padding:22px 0 60px;
+  color:var(--ink-faint);font-size:12px;
+  font-variant-numeric:tabular-nums;
+}
 </style>
 </head>
 <body>
+<div class="wrap">
   <header>
     <h1>takenakayoshito</h1>
-    <p>2019.06.19からの社内共有メモを、こっちにまとめていく。</p>
+    <p class="lede">2019.06.19からの社内共有メモを、こっちにまとめていく。</p>
   </header>
 
- <main>
-  
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
+  <div class="rule" aria-hidden="true"></div>
 
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
+  <main id="feed">
+    <div class="status" id="status">読み込み中…</div>
+  </main>
 
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
+  <footer id="foot"></footer>
+</div>
 
-  <article>
-    <time datetime="2019-07-31">2019.07.31</time>
-    <p><a href="https://brand.denso.com/ja/" target="_blank" rel="noopener">デンソー ブランドサイト</a>と、<a href="http://www.hisense.cn/" target="_blank" rel="noopener">ハイセンス グローバルサイト</a></p>
-  </article>
- 
-  <article>
-    <time datetime="2019-07-30">2019.07.30</time>
-    <p>前回（2014年）消費税が5%→8%に増税した際では、景況感は下がったようです。</p>
-  </article>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-  <article>
-    <time datetime="2019-07-29">2019.07.29</time>
-    <p>食べる通信｜髙橋さん</p>
-  </article>
+function parseBlock(b){
+  const lines = b.split("\n").map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return null;
+  const date = lines[0].replace(/^MEMO[：:]\s*/,"").trim();
+  let rest = lines.slice(1);
+  let url = "";
+  const ui = rest.findIndex(l=>/^https?:\/\//.test(l));
+  if(ui >= 0){ url = rest[ui]; rest = rest.filter((_,i)=>i!==ui); }
+  const comment = rest.join("\n");   // エントリー内の改行は保持する
+  const m = date.match(/^(\d{4})\.(\d{2})(?:\.(\d{2}))?/);
+  const key = m ? m[1]+m[2]+(m[3]||"00") : "00000000";
+  if(!comment && !url) return null;
+  return { date, comment, url, key };
+}
 
-  <article>
-    <time datetime="2019-07-26">2019.07.26</time>
-    <p>続報：これか？と思ったらこれだった</p>
-  </article>
+// リンクのルール：
+//   [ ]（半角）／［ ］（全角）で囲んだ語があれば、そこだけリンク（括弧は表示では消える）
+//   無ければ、本文まるごとをリンク／URLが無ければ ただのテキスト
+//   「」はただの引用符（リンクには関与しない）。改行は保持。
+function linkify(comment, url){
+  let c = esc(comment);
+  const link = t => url ? '<a href="'+esc(url)+'" target="_blank" rel="noopener">'+t+'</a>' : t;
+  const pin = c.match(/[\[［]([^\]］]+)[\]］]/);
+  if(pin){
+    c = c.slice(0, pin.index) + link(pin[1]) + c.slice(pin.index + pin[0].length);
+  }else if(url){
+    c = link(c);
+  }
+  return c.replace(/\n/g, "<br>");   // 保持した改行を表示上の改行に
+}
 
-  <article>
-    <time datetime="2019-07-25">2019.07.25</time>
-    <p>海苔「一日二枚で医者いらず」</p>
-  </article>
+function render(entries){
+  const feed = document.getElementById("feed");
+  if(!entries.length){
+    document.getElementById("status").textContent = "まだ投稿がありません。";
+    return;
+  }
+  feed.innerHTML = entries.map(e =>
+    '<article class="entry">'
+    + '<div class="date">'+esc(e.date)+'</div>'
+    + '<p class="text">'+linkify(e.comment, e.url)+'</p>'
+    + '</article>'
+  ).join("");
+  document.getElementById("foot").textContent = entries.length.toLocaleString() + " 件";
+}
 
-  <article>
-    <time datetime="2019-07-24">2019.07.24</time>
-    <p>今日初めて「カーネルパニック」を食らう</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-23">2019.07.23</time>
-    <p>ずっと、モデュロール</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-22">2019.07.22</time>
-    <p>フィッシャーマンコール</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-19">2019.07.19</time>
-    <p>次は「仮面ライダーゼロワン」という商標らしい</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-18">2019.07.18</time>
-    <p>ITS 関東ITソフトウェア健康保険組合</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-17">2019.07.17</time>
-    <p>生活定点</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-16">2019.07.16</time>
-    <p>
-    HD：1440×1080px<br>
-    フルHD：1920×1080px<br>
-    4K：3840×2160px
-    </p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-12">2019.07.12</time>
-    <p>トイレットペーパーブラスター</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-11">2019.07.11</time>
-    <p>ダンボールコマンダー</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-10">2019.07.10</time>
-    <p>なるほど「SDGsウォッシュ」という言葉</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-09">2019.07.09</time>
-    <p>ボトルキャップチャレンジ</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-08">2019.07.08</time>
-    <p>ドクターマリオ ワールド配信</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-05">2019.07.05</time>
-    <p>スウェーデン「Karma」の似たやつ：Reduce GO</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-04">2019.07.04</time>
-    <p>シンギュラリティ…</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-03">2019.07.03</time>
-    <p>backlogをお勧めしておく</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-02">2019.07.02</time>
-    <p>色の校正：Photoshopによる1型色覚（P型）と、2型色覚（D型）擬似変換</p>
-  </article>
-
-  <article>
-    <time datetime="2019-07-01">2019.07.01</time>
-    <p><a href="https://www.kyodo.co.jp/publish/%e8%a8%98%e8%80%85%e3%83%8f%e3%83%b3%e3%83%89%e3%83%96%e3%83%83%e3%82%af%e3%80%80%e7%ac%ac%ef%bc%91%ef%bc%93%e7%89%88/" target="_blank" rel="noopener">記者ハンドブック（共同通信社）</a></p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-28">2019.06.28</time>
-    <p>商材・サービスによっては、Google検索よりもSNS検索（Twitter・Instagram）のが考慮すべき場合がありますー</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-27">2019.06.27</time>
-    <p>今度使う、Google Webフォント「<a href="https://fonts.google.com/noto/specimen/Noto+Sans+JP" target="_blank" rel="noopener">Noto Sans JP</a>」</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-26">2019.06.26</time>
-    <p>今日時点でのターゲットブラウザ（9つ）</p>
-    <p>iOS Safari, Android Chrome, iOS Chrome, PC Chrome, PC Flrefox, PC Edge, Mac Chrome, Mac Safari, Mac Flrefox</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-25">2019.06.25</time>
-    <p>注意：SSL化されていないサイトは「<a href="https://ssl.sakura.ad.jp/column/https-not-valid/" target="_blank" rel="noopener">保護されていない通信</a>」と警告されます！</p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-24">2019.06.24</time>
-    <p>高齢化世界1位の日本で、サンデーさん出店エリアでは高齢化率30%を超えている</p>
-    <span class="note">※世界からは、日本の高齢化対策（一番手として）が注目される</span>
-  </article>
-
-  <article>
-    <time datetime="2019-06-21">2019.06.21</time>
-    <p>あこれライゾマさん案件でした...</p>
-    <p><a href="https://www.ntticc.or.jp/ja/archive/works/nike-music-shoe/" target="_blank" rel="noopener">Nike Music Shoe</a></p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-20">2019.06.20</time>
-    <p>5GのiPhoneは2020年秋発売</p>
-    <p><a href="http://ar-bito.com/2019/06/03/world-mr-news-5gxxr/" target="_blank" rel="noopener">5GとVR</a></p>
-  </article>
-
-  <article>
-    <time datetime="2019-06-19">2019.06.19</time>
-    <p>iPhoneとAndroid国内シェアは（最近では）Androidの方が上らしい</p>
-    <span class="note">※10-20歳代では未だIPhoneのが上</span>
-  </article>
-
- </main>
-
+async function load(){
+  try{
+    const res = await fetch("memo.txt", {cache:"no-cache"});
+    if(!res.ok) throw new Error("not ok");
+    const txt = await res.text();
+    const entries = txt.split(/\n\s*\n/).map(b=>b.trim()).filter(Boolean)
+                       .map(parseBlock).filter(Boolean)
+                       .sort((a,b)=> a.key<b.key?1 : a.key>b.key?-1 : 0);
+    render(entries);
+  }catch(err){
+    document.getElementById("status").innerHTML =
+      "一覧を読み込めませんでした。<br>公開URL（GitHub Pages）では表示されます。"
+      + "ローカルで確認するだけなら <code>memo.txt</code> を同じ場所に置いてサーバー経由で開いてください。";
+  }
+}
+load();
+</script>
 </body>
 </html>
