@@ -67,10 +67,11 @@ HD：1440×1080px
 シンギュラリティ…
 
 2019.07.03
-backlogをお勧めしておく
+[backlog](https://backlog.com/ja/)をお勧めしておく
 
 2019.07.02
 色の校正：Photoshopによる1型色覚（P型）と、2型色覚（D型）擬似変換
+https://helpx.adobe.com/jp/photoshop/using/proofing-colors.html
 
 2019.07.01
 [記者ハンドブック（共同通信社）](https://www.kyodo.co.jp/publish/%e8%a8%98%e8%80%85%e3%83%8f%e3%83%b3%e3%83%89%e3%83%96%e3%83%83%e3%82%af%e3%80%80%e7%ac%ac%ef%bc%91%ef%bc%93%e7%89%88/)
