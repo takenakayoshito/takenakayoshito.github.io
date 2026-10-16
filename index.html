@@ -57,11 +57,13 @@
 
 <script>
   const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const isUrl = s => /^https?:\/\/\S+$/.test(s);
+  const INLINE = /\[[^\]]+\]\((https?:\/\/[^)\s]+)\)/;
 
-  // memo.txt 内の [表示テキスト](URL) を a タグに変換（1件に複数でも可）
-  function links(s){
+  // [表示テキスト](URL) を a タグに（1件に複数でも可）
+  function mdLinks(s){
     return s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
-      (m, t, u) => '<a href="' + u + '" target="_blank" rel="noopener">' + t + '</a>');
+      (m, t, u) => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + t + '</a>');
   }
 
   function toDatetime(d){ return d.replace(/\./g, "-"); }
@@ -72,12 +74,25 @@
       const lines = b.split("\n").map(l => l.trim()).filter(Boolean);
       if(!lines.length) return "";
       const date = lines[0].replace(/^MEMO[：:]\s*/, "");
-      const body = lines.slice(1).map(ln => {
-        const html = links(esc(ln));
-        return ln.charAt(0) === "※"
-          ? '<span class="note">' + html + '</span>'
-          : '<p>' + html + '</p>';
+      const rest = lines.slice(1);
+
+      const bareUrl = rest.find(isUrl) || "";     // 単独で置かれたURL（＝この投稿のリンク先）
+      const textLines = rest.filter(l => !isUrl(l)); // 本文（URL単独行は表示から外す）
+      const hasInline = INLINE.test(b);
+
+      const body = textLines.map(ln => {
+        const isNote = ln.charAt(0) === "※";
+        let html;
+        if (hasInline) {
+          html = mdLinks(esc(ln));                 // [語](URL) を優先
+        } else if (bareUrl && !isNote) {
+          html = '<a href="' + esc(bareUrl) + '" target="_blank" rel="noopener">' + esc(ln) + '</a>'; // 本文まるごとリンク
+        } else {
+          html = mdLinks(esc(ln));
+        }
+        return isNote ? '<span class="note">' + html + '</span>' : '<p>' + html + '</p>';
       }).join("\n");
+
       return '<article><time datetime="' + esc(toDatetime(date)) + '">' + esc(date) + '</time>'
              + body + '</article>';
     }).join("\n");
