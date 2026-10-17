@@ -64,17 +64,57 @@
     background: linear-gradient(180deg, #f8f8f8 0%, #ffffff 100%);
     z-index: -1;                  /* 文字の背後 */
   }
+  .count {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+    font-variant-numeric: tabular-nums;   /* 数字の桁幅を固定 */
+    color: #202020;
+  }
 </style>
 </head>
 <body>
   <header>
     <h1>takenakayoshito</h1>
     <p>2019.06.19からの社内共有メモを、こっちにまとめていく。</p>
+    <p class="count"><span id="memo-count">00000000</span></p>
   </header>
 
  <main id="feed"></main>
 
 <script>
+  // 8桁ゼロ埋めの件数を、半角英数（0-9・A-Z）でスクランブル→左から着地。4秒ごとに1回転
+  function animateCount(target){
+    const el = document.getElementById("memo-count");
+    if(!el) return;
+    const text  = String(target).padStart(8, "0");      // 例: 00000067
+    const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 半角英数
+    const len = text.length;                            // 8
+    const duration = 1600;                              // 1回転の回る時間（ms）
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches){ el.textContent = text; return; }
+
+    let raf = 0;
+    function run(){
+      cancelAnimationFrame(raf);
+      const start = performance.now();
+      let lastSwap = 0, cache = text;
+      (function frame(now){
+        const p = Math.min((now - start) / duration, 1);
+        const locked = Math.floor(p * len);             // 左の桁から確定
+        if(now - lastSwap > 32 || p >= 1){              // 切り替わる速さ（ms）
+          lastSwap = now;
+          let out = "";
+          for(let i=0;i<len;i++) out += (i < locked) ? text[i] : CHARS[Math.floor(Math.random()*CHARS.length)];
+          cache = out;
+        }
+        el.textContent = (p >= 1) ? text : cache;
+        if(p < 1) raf = requestAnimationFrame(frame);
+      })(start);
+    }
+    run();
+    setInterval(run, 4000);                             // 4秒ごとに回す
+  }
+
   const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const isUrl = s => /^https?:\/\/\S+$/.test(s);
   const INLINE = /\[[^\]]+\]\((https?:\/\/[^)\s]+)\)/;
@@ -119,7 +159,11 @@
 
   fetch("memo.txt", {cache:"no-cache"})
     .then(r => { if(!r.ok) throw new Error(); return r.text(); })
-    .then(t => render(t.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean)))
+    .then(t => {
+      const blocks = t.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+      render(blocks);
+      animateCount(blocks.length);
+    })
     .catch(() => {
       document.getElementById("feed").innerHTML =
         "<p>一覧を読み込めませんでした。公開URL（GitHub Pages）では表示されます。</p>";
