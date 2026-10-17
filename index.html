@@ -9,26 +9,17 @@
     margin: 0;
     padding: 0;
   }
-  :root {
-    --bg: #ffffff;   /* 背景 */
-    --fg: #202020;   /* 文字 */
-    --rule: #c0c0c0; /* 区切り線 */
-    --band: #f6f6f6; /* 上部グラデ帯の濃い側 */
-  }
+  :root { --bg: #ffffff; }
   html {
-    background-color: var(--bg);
-    transition: background-color .7s ease;   /* ← 背景フェードの速さ */
-  }
-  @media (prefers-reduced-motion: reduce){
-    html, body { transition: none; }
+    background-color: var(--bg);          /* スクロールで月ごとに変わる背景 */
+    transition: background-color 0.8s ease;
   }
   body {
     font-family: -apple-system, "Hiragino Sans", sans-serif;
     max-width: 20em;
     margin: 12rem auto;
-    color: var(--fg);
+    color: #202020;
     line-height: 2.0;
-    transition: color .7s ease;
   }
   header {
     margin-bottom: 12rem;          /* リード → 帯の上端：12rem の白 */
@@ -46,18 +37,18 @@
     display: block;
     width: 0.5em;
     height: 1px;
-    background: var(--rule);
+    background: #c0c0c0;
     margin-top: 4rem;
   }
   article time {
     display: block;
-    color: inherit;
+    color: #202020;
   }
   article .note {
-    color: inherit;
+    color: #202020;
   }
   article a {
-    color: inherit;
+    color: #202020;
     text-decoration-color: #a0ff00;
     text-decoration-thickness: 1px;   /* ← 線の太さ（高さ）*/
     text-underline-offset: 4px;       /* ← 線の位置（文字からの距離・下げる）*/
@@ -75,7 +66,7 @@
     transform: translateX(-50%);
     width: 100vw;                 /* 画面いっぱいの幅 */
     height: 200px;                /* 帯の高さ（フェードの長さ）*/
-    background: linear-gradient(180deg, var(--band) 0%, var(--bg) 100%);
+    background: linear-gradient(180deg, #f8f8f8 0%, #ffffff 100%);
     z-index: -1;                  /* 文字の背後 */
   }
   .count {
@@ -83,7 +74,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.025em;
     font-variant-numeric: tabular-nums;   /* 数字の桁幅を固定 */
-    color: var(--fg);
+    color: #202020;
   }
 </style>
 </head>
@@ -97,6 +88,22 @@
  <main id="feed"></main>
 
 <script>
+  // 月ごとの背景色（偶数月=白 / 奇数月=#f8f8f8。12月白・11月f8f8f8・10月白…のローテーション）
+  function monthColor(m){
+    return (m % 2 === 0) ? "#ffffff" : "#f8f8f8";
+  }
+  // 画面中央に来た投稿の「月」に合わせて html の背景色をフェード
+  function setupScrollBg(){
+    const arts = document.querySelectorAll("article[data-month]");
+    if(!arts.length) return;
+    const apply = m => document.documentElement.style.setProperty("--bg", monthColor(m));
+    apply(parseInt(arts[0].dataset.month, 10));   // 最初の月で初期化
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting) apply(parseInt(e.target.dataset.month,10)); });
+    }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });  // 画面の“中央ライン”を横切った投稿が現在値
+    arts.forEach(a=>io.observe(a));
+  }
+
   // 8桁ゼロ埋めの件数を、半角英数（0-9・A-Z）でスクランブル→左から着地。4秒ごとに1回転
   function animateCount(target){
     const el = document.getElementById("memo-count");
@@ -127,38 +134,6 @@
     }
     run();
     setInterval(run, 4000);                             // 4秒ごとに回す
-  }
-
-  // 月ごとの背景色ローテーション（偶数月=白 / 奇数月=黒。1〜12で自由に変更可）
-  const MONTH_BG = {
-    1:"#101010",  2:"#ffffff",  3:"#101010",  4:"#ffffff",
-    5:"#101010",  6:"#ffffff",  7:"#101010",  8:"#ffffff",
-    9:"#101010", 10:"#ffffff", 11:"#101010", 12:"#ffffff"
-  };
-  function isLight(hex){
-    const c=hex.replace("#",""); const r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
-    return (0.2126*r + 0.7152*g + 0.0722*b) > 140;   // 明るい背景か
-  }
-  function applyTheme(month){
-    const bg = MONTH_BG[month] || "#ffffff";
-    const light = isLight(bg);
-    const st = document.documentElement.style;
-    st.setProperty("--bg", bg);
-    st.setProperty("--fg", light ? "#202020" : "#f0f0f0");  // 文字色（濃淡を自動反転）
-    st.setProperty("--band", light ? "#f6f6f6" : "#1c1c1c");
-  }
-  function monthOf(article){
-    const t=article.querySelector("time"); const d=t&&t.getAttribute("datetime");
-    return d ? parseInt(d.split("-")[1],10) : null;      // YYYY-MM-DD の MM
-  }
-  function initBackgroundFade(){
-    const arts=[...document.querySelectorAll("article")];
-    if(!arts.length) return;
-    applyTheme(monthOf(arts[0]));                         // 初期＝最新月
-    const io=new IntersectionObserver((es)=>{
-      es.forEach(e=>{ if(e.isIntersecting){ const m=monthOf(e.target); if(m) applyTheme(m); } });
-    }, { rootMargin: "-50% 0px -50% 0px" });              // ビューポート中央の“線”を横切った記事で切替
-    arts.forEach(a=>io.observe(a));
   }
 
   const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -198,7 +173,9 @@
         return isNote ? '<span class="note">' + html + '</span>' : '<p>' + html + '</p>';
       }).join("\n");
 
-      return '<article><time datetime="' + esc(toDatetime(date)) + '">' + esc(date) + '</time>'
+      const mm = (date.match(/^\d{4}\.(\d{1,2})/) || [])[1];
+      const monthAttr = mm ? ' data-month="' + parseInt(mm,10) + '"' : '';
+      return '<article' + monthAttr + '><time datetime="' + esc(toDatetime(date)) + '">' + esc(date) + '</time>'
              + body + '</article>';
     }).join("\n");
   }
@@ -209,7 +186,7 @@
       const blocks = t.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
       render(blocks);
       animateCount(blocks.length);
-      initBackgroundFade();
+      setupScrollBg();
     })
     .catch(() => {
       document.getElementById("feed").innerHTML =
