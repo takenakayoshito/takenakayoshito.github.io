@@ -9,11 +9,6 @@
     margin: 0;
     padding: 0;
   }
-  :root { --bg: #ffffff; }
-  html {
-    background-color: var(--bg);          /* スクロールで月ごとに変わる背景 */
-    transition: background-color 0.8s ease;
-  }
   body {
     font-family: -apple-system, "Hiragino Sans", sans-serif;
     max-width: 20em;
@@ -88,22 +83,6 @@
  <main id="feed"></main>
 
 <script>
-  // 月ごとの背景色（偶数月=白 / 奇数月=#f8f8f8。12月白・11月e0e0e0・10月白…のローテーション）
-  function monthColor(m){
-    return (m % 2 === 0) ? "#ffffff" : "#e0e0e0";
-  }
-  // 画面中央に来た投稿の「月」に合わせて html の背景色をフェード
-  function setupScrollBg(){
-    const arts = document.querySelectorAll("article[data-month]");
-    if(!arts.length) return;
-    const apply = m => document.documentElement.style.setProperty("--bg", monthColor(m));
-    apply(parseInt(arts[0].dataset.month, 10));   // 最初の月で初期化
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting) apply(parseInt(e.target.dataset.month,10)); });
-    }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });  // 画面の“中央ライン”を横切った投稿が現在値
-    arts.forEach(a=>io.observe(a));
-  }
-
   // 8桁ゼロ埋めの件数を、半角英数（0-9・A-Z）でスクランブル→左から着地。4秒ごとに1回転
   function animateCount(target){
     const el = document.getElementById("memo-count");
@@ -173,9 +152,7 @@
         return isNote ? '<span class="note">' + html + '</span>' : '<p>' + html + '</p>';
       }).join("\n");
 
-      const mm = (date.match(/^\d{4}\.(\d{1,2})/) || [])[1];
-      const monthAttr = mm ? ' data-month="' + parseInt(mm,10) + '"' : '';
-      return '<article' + monthAttr + '><time datetime="' + esc(toDatetime(date)) + '">' + esc(date) + '</time>'
+      return '<article><time datetime="' + esc(toDatetime(date)) + '">' + esc(date) + '</time>'
              + body + '</article>';
     }).join("\n");
   }
@@ -186,7 +163,6 @@
       const blocks = t.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
       render(blocks);
       animateCount(blocks.length);
-      setupScrollBg();
     })
     .catch(() => {
       document.getElementById("feed").innerHTML =
