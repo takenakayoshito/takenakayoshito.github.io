@@ -88,9 +88,9 @@
  <main id="feed"></main>
 
 <script>
-  // 月ごとの背景色（偶数月=白 / 奇数月=#f8f8f8。12月白・11月f8f8f8・10月白…のローテーション）
+  // 月ごとの背景色（偶数月=白 / 奇数月=#f8f8f8。12月白・11月f0f0f0・10月白…のローテーション）
   function monthColor(m){
-    return (m % 2 === 0) ? "#ffffff" : "#f8f8f8";
+    return (m % 2 === 0) ? "#ffffff" : "#f0f0f0";
   }
   // 画面中央に来た投稿の「月」に合わせて html の背景色をフェード
   function setupScrollBg(){
