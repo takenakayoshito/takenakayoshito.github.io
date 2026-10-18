@@ -136,17 +136,17 @@
   #to-top:hover { border-color: #202020; }
   /* ハンバーガー / ドロワー（年ナビ）*/
   #menu-btn {
-    position: fixed; top: 48px; right: 48px; z-index: 40;
-    width: 42px; height: 42px;                 /* 外寸42×42 */
-    display: flex; flex-direction: column; justify-content: space-between;  /* 6×3 + 12×2 = 42 */
+    position: fixed; top: 2rem; right: 2rem; z-index: 40;
+    width: 21px; height: 21px;                 /* 外寸21×21（CSSpx）*/
+    display: flex; flex-direction: column; justify-content: space-between;  /* 3×3 + 6×2 = 21 */
     background: none; border: none; padding: 0;
     cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
-  #menu-btn .bar { display: block; width: 42px; height: 6px; background: #202020;
+  #menu-btn .bar { display: block; width: 21px; height: 3px; background: #202020;
     transition: transform .3s ease, opacity .2s ease; }
-  #menu-btn[aria-expanded="true"] .bar:nth-child(1){ transform: translateY(18px) rotate(45deg); }
+  #menu-btn[aria-expanded="true"] .bar:nth-child(1){ transform: translateY(9px) rotate(45deg); }
   #menu-btn[aria-expanded="true"] .bar:nth-child(2){ opacity: 0; }
-  #menu-btn[aria-expanded="true"] .bar:nth-child(3){ transform: translateY(-18px) rotate(-45deg); }
+  #menu-btn[aria-expanded="true"] .bar:nth-child(3){ transform: translateY(-9px) rotate(-45deg); }
   #overlay {
     position: fixed; inset: 0; background: rgba(32,32,32,0.25); z-index: 30;
     opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease;
