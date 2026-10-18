@@ -154,7 +154,7 @@
   #overlay.is-open { opacity: 1; visibility: visible; }
   #drawer {
     position: fixed; top: 0; right: 0; height: 100%; width: min(76vw, 15rem);
-    background: #ffffff; z-index: 35; padding: 5rem 2rem 2rem;
+    background: #ffffff; z-index: 35; padding: 4rem 2rem 2rem;   /* 上を 5rem→4rem（スケールに統一）*/
     transform: translateX(100%); transition: transform .35s ease;
     box-shadow: -1px 0 0 #eeeeee;
   }
@@ -168,7 +168,7 @@
     font-variant-numeric: tabular-nums; width: max-content;
   }
   #year-nav a:hover { color: #808080; }
-  #year-nav .brand { font-size: 20px; font-weight: 600; }  /* 公開中タイトル(h1)に似せる */  /* 下線なし・808080へ */
+  #year-nav .brand { font-size: 20px; font-weight: 600; margin-bottom: 1rem; }  /* タイトル下のみ: gap1rem + 1rem = 2rem（現状の2倍）*/  /* 公開中タイトル(h1)に似せる */  /* 下線なし・808080へ */
   article[id^="year-"] { scroll-margin-top: 8rem; }
   @media (prefers-reduced-motion: reduce) {
     #drawer, #overlay, #menu-btn .bar { transition: none; }
