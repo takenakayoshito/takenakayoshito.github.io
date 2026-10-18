@@ -93,28 +93,34 @@
     font-variant-numeric: tabular-nums;   /* 数字の桁幅を固定 */
     color: #202020;
   }
+  .count--bottom {
+    margin-top: 6rem;              /* 最古メモ → 下カウンター */
+    /* 下カウンター → ページ最下部は body の margin-bottom 12rem をそのまま使用（×=12rem）*/
+  }
 </style>
 </head>
 <body>
   <header>
     <h1>takenakayoshito</h1>
     <p>2019.06.19からの社内共有メモを、こっちにまとめていく。</p>
-    <p class="count"><span id="memo-count" aria-live="off">00000000</span></p>
+    <p class="count"><span class="js-count" aria-live="off">00000000</span></p>
   </header>
 
  <main id="feed"></main>
 
+  <footer class="count count--bottom"><span class="js-count" aria-hidden="true">00000000</span></footer>
+
 <script>
   // 8桁ゼロ埋めの件数を、半角英数（0-9・A-Z）でスクランブル→左から着地。4秒ごとに1回転
   function animateCount(target){
-    const el = document.getElementById("memo-count");
-    if(!el) return;
-    el.setAttribute("aria-label", "メモ " + target + "件");  // 回転中もSRは実数を読む
-    const text  = String(target).padStart(8, "0");      // 例: 00000067
+    const els = [...document.querySelectorAll(".js-count")];
+    if(!els.length) return;
+    const text  = String(target).padStart(8, "0");      // 例: 00000126
     const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 半角英数
     const len = text.length;                            // 8
     const duration = 1600;                              // 1回転の回る時間（ms）
-    if(matchMedia("(prefers-reduced-motion: reduce)").matches){ el.textContent = text; return; }
+    els.forEach(el => { if(!el.hasAttribute("aria-hidden")) el.setAttribute("aria-label", "メモ " + target + "件"); });
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches){ els.forEach(el => el.textContent = text); return; }
 
     let raf = 0;
     function run(){
@@ -130,7 +136,8 @@
           for(let i=0;i<len;i++) out += (i < locked) ? text[i] : CHARS[Math.floor(Math.random()*CHARS.length)];
           cache = out;
         }
-        el.textContent = (p >= 1) ? text : cache;
+        const val = (p >= 1) ? text : cache;
+        for(const el of els) el.textContent = val;      // 上下を同じ値で同期
         if(p < 1) raf = requestAnimationFrame(frame);
       })(start);
     }
