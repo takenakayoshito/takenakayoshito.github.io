@@ -9,6 +9,9 @@
     margin: 0;
     padding: 0;
   }
+  html {
+    overflow-x: hidden;            /* 100vw帯による横スクロールを予防 */
+  }
   body {
     font-family: -apple-system, "Hiragino Sans", sans-serif;
     max-width: 20em;
@@ -77,7 +80,7 @@
   <header>
     <h1>takenakayoshito</h1>
     <p>2019.06.19からの社内共有メモを、こっちにまとめていく。</p>
-    <p class="count"><span id="memo-count">00000000</span></p>
+    <p class="count"><span id="memo-count" aria-live="off">00000000</span></p>
   </header>
 
  <main id="feed"></main>
@@ -87,6 +90,7 @@
   function animateCount(target){
     const el = document.getElementById("memo-count");
     if(!el) return;
+    el.setAttribute("aria-label", "メモ " + target + "件");  // 回転中もSRは実数を読む
     const text  = String(target).padStart(8, "0");      // 例: 00000067
     const CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // 半角英数
     const len = text.length;                            // 8
