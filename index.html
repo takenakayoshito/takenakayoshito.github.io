@@ -169,10 +169,11 @@
     margin-bottom: 1rem;          /* 年リストと少し離す */
   }
   #year-nav a:hover { text-decoration: underline; text-decoration-color: #a0ff00; text-underline-offset: 4px; }
-  article[id^="year-"] { scroll-margin-top: 2rem; }
+  article[id^="year-"] { scroll-margin-top: 8rem; }
   @media (prefers-reduced-motion: reduce) {
     #drawer, #overlay, #menu-btn .bar { transition: none; }
   }
+  html.menu-open { overflow: hidden; }   /* スクロールロックは html 側で（帯をクリップしない）*/
 </style>
 </head>
 <body>
@@ -318,13 +319,13 @@
       btn.setAttribute("aria-expanded","true");
       drawer.classList.add("is-open"); overlay.classList.add("is-open");
       drawer.setAttribute("aria-hidden","false");
-      document.body.style.overflow = "hidden";
+      document.documentElement.classList.add("menu-open");
     }
     function close(){
       btn.setAttribute("aria-expanded","false");
       drawer.classList.remove("is-open"); overlay.classList.remove("is-open");
       drawer.setAttribute("aria-hidden","true");
-      document.body.style.overflow = "";
+      document.documentElement.classList.remove("menu-open");
     }
     btn.addEventListener("click", () => btn.getAttribute("aria-expanded")==="true" ? close() : open());
     overlay.addEventListener("click", close);
@@ -337,7 +338,13 @@
         return;
       }
       const t = document.getElementById(a.dataset.target);
-      if(t) t.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      if(t){
+        t.classList.add("is-visible");        // 先に確定表示（フェードインのズレ防止）
+        t.style.transition = "none";
+        t.getBoundingClientRect();             // 反映を強制してから測る
+        t.style.transition = "";
+        t.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      }
     });
   })();
 
